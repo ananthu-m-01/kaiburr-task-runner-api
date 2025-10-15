@@ -2,12 +2,13 @@ package com.ananthu.kaiburr_task_runner_api.controller;
 
 import com.ananthu.kaiburr_task_runner_api.dto.task.CreateTaskDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task.TaskResponseDTO;
+import com.ananthu.kaiburr_task_runner_api.dto.task.UpdateTaskDTO;
+import com.ananthu.kaiburr_task_runner_api.dto.task_execution.TaskExecutionDTO;
 import com.ananthu.kaiburr_task_runner_api.service.TaskService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/tasks")
@@ -19,8 +20,65 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    public ResponseEntity<TaskResponseDTO> createTask(@RequestBody @Valid CreateTaskDTO createTaskDTO){
-        TaskResponseDTO taskResponseDTO = taskService.createTask(createTaskDTO).getBody();
+    @PostMapping
+    public ResponseEntity<TaskResponseDTO> createTask(@RequestBody CreateTaskDTO createTaskDTO){
+        TaskResponseDTO taskResponseDTO = taskService.createTask(createTaskDTO);
         return ResponseEntity.status(201).body(taskResponseDTO);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<TaskResponseDTO>> getAllTasks(){
+        List<TaskResponseDTO> response = taskService.getAllTasks();
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable String id){
+        TaskResponseDTO response = taskService.getTaskById(id);
+        if(response == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/run")
+    public ResponseEntity<TaskExecutionDTO> runTask(@PathVariable String id){
+        TaskExecutionDTO execution = taskService.runTask(id);
+        if(execution == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(execution);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable String id, @RequestBody UpdateTaskDTO updateTaskDTO){
+            TaskResponseDTO updated = taskService.updateTask(id,updateTaskDTO);
+            if(updated == null){
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updated);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTask(@PathVariable String id){
+        String result = taskService.deleteTask(id);
+        if (result == null) {
+            return ResponseEntity.status(404).body("Task not found");
+        }
+        return ResponseEntity.ok(result);
+    }
+
+
+    @GetMapping("/{id}/executions")
+    public ResponseEntity<List<TaskExecutionDTO>> getTaskExecutions(@PathVariable String id) {
+        List<TaskExecutionDTO> executions = taskService.getTaskExecution(id);
+        if (executions == null || executions.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(executions);
     }
 }
