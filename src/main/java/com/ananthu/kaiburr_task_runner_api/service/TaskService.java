@@ -8,11 +8,15 @@ import com.ananthu.kaiburr_task_runner_api.exceptions.task.InvalidCommandExcepti
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskInvalidCredentialException;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskNotFoundException;
 import com.ananthu.kaiburr_task_runner_api.model.Task;
+import com.ananthu.kaiburr_task_runner_api.model.TaskExecution;
 import com.ananthu.kaiburr_task_runner_api.model.TaskStatus;
 import com.ananthu.kaiburr_task_runner_api.repository.TaskRepository;
 import com.ananthu.kaiburr_task_runner_api.util.Validation;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,8 +124,53 @@ public class TaskService implements ITaskService{
 
     @Override
     public TaskExecutionDTO runTask(String id) {
-        return null;
+        // Fetch task by ID
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
+
+        // Validate the command before execution
+        if (!Validation.isCommandSafe(task.getCommand())) {
+            throw new TaskInvalidCredentialException("Command is unsafe or not allowed: " + task.getCommand());
+        }
+
+        Instant start = Instant.now();
+        String[] parts = task.getCommand().split("\\s+");
+
+        StringBuilder output = new StringBuilder();
+        TaskStatus status = TaskStatus.RUNNING;
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder(parts);
+            Process process = pb.start();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output.append(line).append("\n");
+                }
+            }
+
+            int exitCode = process.waitFor();
+            status = (exitCode == 0) ? TaskStatus.SUCCESS : TaskStatus.FAILED;
+
+        } catch (Exception e) {
+            output.append("Error: ").append(e.getMessage());
+            status = TaskStatus.FAILED;
+        }
+
+        Instant end = Instant.now();
+
+        // Create a new TaskExecution object and add it to the task
+        TaskExecution execution = new TaskExecution(start, end, output.toString().trim(), status);
+        task.getTaskExecutions().add(execution);
+
+        // Save updated task to DB
+        taskRepository.save(task);
+
+        // Map to DTO and return
+        return new TaskExecutionDTO(execution.getStartTime(), execution.getEndTime(), execution.getOutput(), execution.getStatus());
     }
+
 
     @Override
     public TaskResponseDTO updateTask(String id, UpdateTaskDTO updateTaskDTO) {
