@@ -81,4 +81,11 @@ public class TaskController {
         }
         return ResponseEntity.ok(executions);
     }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<TaskResponseDTO>> getAllTasksByName(@PathVariable String name){
+        System.out.println("called");
+        List<TaskResponseDTO> response = taskService.getTaskByName(name);
+        return ResponseEntity.ok(response);
+    }
 }

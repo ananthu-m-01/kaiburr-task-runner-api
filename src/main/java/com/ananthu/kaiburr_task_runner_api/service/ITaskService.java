@@ -15,4 +15,5 @@ public interface ITaskService {
     TaskResponseDTO updateTask(String id, UpdateTaskDTO updateTaskDTO);
     String deleteTask(String id);
     List<TaskExecutionDTO> getTaskExecution(String id);
+    List<TaskResponseDTO> getTaskByName(String name);
 }

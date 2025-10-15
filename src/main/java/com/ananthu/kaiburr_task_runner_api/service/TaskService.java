@@ -244,4 +244,33 @@ public class TaskService implements ITaskService{
 
         return taskExecutions;
     }
+
+    @Override
+    public List<TaskResponseDTO> getTaskByName(String name) {
+        List<Task> tasks = taskRepository.findByNameContainingIgnoreCase(name);
+
+        List<TaskResponseDTO> responseList = tasks.stream().map(task -> {
+            TaskResponseDTO dto = new TaskResponseDTO();
+            dto.setId(task.getId());
+            dto.setName(task.getName());
+            dto.setOwner(task.getOwner());
+            dto.setCommand(task.getCommand());
+
+            // Map executions
+            List<TaskExecutionDTO> executionDTOs = task.getTaskExecutions()
+                    .stream()
+                    .map(exec -> new TaskExecutionDTO(
+                            exec.getStartTime(),
+                            exec.getEndTime(),
+                            exec.getOutput(),
+                            exec.getStatus() != null ? exec.getStatus() : TaskStatus.PENDING
+                    ))
+                    .toList();
+
+            dto.setTaskExecutions(executionDTOs);
+
+            return dto;
+        }).toList();
+        return responseList;
+    }
 }
