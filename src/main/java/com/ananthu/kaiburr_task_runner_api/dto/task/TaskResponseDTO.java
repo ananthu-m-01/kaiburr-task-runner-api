@@ -1,7 +1,6 @@
 package com.ananthu.kaiburr_task_runner_api.dto.task;
 
 import com.ananthu.kaiburr_task_runner_api.dto.task_execution.TaskExecutionDTO;
-import com.ananthu.kaiburr_task_runner_api.model.TaskExecutionModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

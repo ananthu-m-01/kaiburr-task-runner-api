@@ -1,5 +1,6 @@
 package com.ananthu.kaiburr_task_runner_api.dto.task_execution;
 
+import com.ananthu.kaiburr_task_runner_api.model.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,5 @@ public class TaskExecutionDTO {
     private Instant startTime;
     private Instant endTime;
     private String output;
+    private TaskStatus status;
 }

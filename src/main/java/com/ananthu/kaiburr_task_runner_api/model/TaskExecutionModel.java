@@ -14,4 +14,5 @@ public class TaskExecutionModel {
     private Instant startTime;
     private Instant endTime;
     private String output;
+    private TaskStatus status;
 }
