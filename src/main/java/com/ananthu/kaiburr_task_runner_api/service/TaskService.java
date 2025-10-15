@@ -4,11 +4,13 @@ import com.ananthu.kaiburr_task_runner_api.dto.task.CreateTaskDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task.TaskResponseDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task.UpdateTaskDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task_execution.TaskExecutionDTO;
+import com.ananthu.kaiburr_task_runner_api.exceptions.task.InvalidCommandException;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskInvalidCredentialException;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskNotFoundException;
 import com.ananthu.kaiburr_task_runner_api.model.TaskModel;
 import com.ananthu.kaiburr_task_runner_api.model.TaskStatus;
 import com.ananthu.kaiburr_task_runner_api.repository.TaskRepository;
+import com.ananthu.kaiburr_task_runner_api.util.Validation;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ public class TaskService implements ITaskService{
         }
         if(createTaskDTO.getCommand() == null || createTaskDTO.getCommand().isEmpty()){
             throw new TaskInvalidCredentialException("Task command cannot be empty");
+        }
+        if (!Validation.isCommandSafe(createTaskDTO.getCommand())) {
+            throw new InvalidCommandException("Unsafe or potentially malicious command detected!");
         }
 
         TaskModel taskModel = new TaskModel();
@@ -130,6 +135,10 @@ public class TaskService implements ITaskService{
         }
         if(updateTaskDTO.getCommand() == null || updateTaskDTO.getCommand().isEmpty()){
             throw new TaskInvalidCredentialException("Task command cannot be empty");
+        }
+
+        if (!Validation.isCommandSafe(updateTaskDTO.getCommand())) {
+            throw new InvalidCommandException("Unsafe or potentially malicious command detected!");
         }
 
         task.setName(updateTaskDTO.getName());
