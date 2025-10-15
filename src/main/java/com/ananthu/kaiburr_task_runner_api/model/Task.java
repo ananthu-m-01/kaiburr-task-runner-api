@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskModel {
+public class Task {
 
     @Id
     private String id;
@@ -22,5 +22,5 @@ public class TaskModel {
     private String command;
 
 //    one-to-many relationship no need to specify in mongodb[use @OneToMany annotation in relational databases
-    private List<TaskExecutionModel> taskExecutions = new ArrayList<>();
+    private List<TaskExecution> taskExecutions = new ArrayList<>();
 }

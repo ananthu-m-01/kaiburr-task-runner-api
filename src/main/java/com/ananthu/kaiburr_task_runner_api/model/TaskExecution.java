@@ -9,7 +9,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskExecutionModel {
+public class TaskExecution {
 
     private Instant startTime;
     private Instant endTime;

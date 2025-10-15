@@ -7,7 +7,7 @@ import com.ananthu.kaiburr_task_runner_api.dto.task_execution.TaskExecutionDTO;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.InvalidCommandException;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskInvalidCredentialException;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskNotFoundException;
-import com.ananthu.kaiburr_task_runner_api.model.TaskModel;
+import com.ananthu.kaiburr_task_runner_api.model.Task;
 import com.ananthu.kaiburr_task_runner_api.model.TaskStatus;
 import com.ananthu.kaiburr_task_runner_api.repository.TaskRepository;
 import com.ananthu.kaiburr_task_runner_api.util.Validation;
@@ -40,14 +40,14 @@ public class TaskService implements ITaskService{
             throw new InvalidCommandException("Unsafe or potentially malicious command detected!");
         }
 
-        TaskModel taskModel = new TaskModel();
-        taskModel.setName(createTaskDTO.getName());
-        taskModel.setOwner(createTaskDTO.getOwner());
-        taskModel.setCommand(createTaskDTO.getCommand());
-        taskModel.setTaskExecutions(new ArrayList<>());
+        Task task = new Task();
+        task.setName(createTaskDTO.getName());
+        task.setOwner(createTaskDTO.getOwner());
+        task.setCommand(createTaskDTO.getCommand());
+        task.setTaskExecutions(new ArrayList<>());
 
 
-        TaskModel savedTask = taskRepository.save(taskModel);
+        Task savedTask = taskRepository.save(task);
 
         TaskResponseDTO response = new TaskResponseDTO();
         response.setId(savedTask.getId());
@@ -61,9 +61,9 @@ public class TaskService implements ITaskService{
 
     @Override
     public List<TaskResponseDTO> getAllTasks() {
-        List<TaskModel> taskModels = taskRepository.findAll();
+        List<Task> tasks = taskRepository.findAll();
 
-        List<TaskResponseDTO> responseList = taskModels.stream().map(task -> {
+        List<TaskResponseDTO> responseList = tasks.stream().map(task -> {
             TaskResponseDTO dto = new TaskResponseDTO();
             dto.setId(task.getId());
             dto.setName(task.getName());
@@ -92,17 +92,17 @@ public class TaskService implements ITaskService{
     @Override
     public TaskResponseDTO getTaskById(String id) {
 
-        TaskModel taskModel = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with id :"+id));
+        Task task = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with id :"+id));
 
         TaskResponseDTO response = new TaskResponseDTO();
-        response.setId(taskModel.getId());
-        response.setName(taskModel.getName());
-        response.setOwner(taskModel.getOwner());
-        response.setCommand(taskModel.getCommand());
+        response.setId(task.getId());
+        response.setName(task.getName());
+        response.setOwner(task.getOwner());
+        response.setCommand(task.getCommand());
 
 //        Task execution model - (mapping to) - task execution dto
 
-        List<TaskExecutionDTO> executionDTOS = taskModel.getTaskExecutions()
+        List<TaskExecutionDTO> executionDTOS = task.getTaskExecutions()
                 .stream()
                 .map(execution -> new TaskExecutionDTO(
                         execution.getStartTime(),
@@ -125,7 +125,7 @@ public class TaskService implements ITaskService{
 
     @Override
     public TaskResponseDTO updateTask(String id, UpdateTaskDTO updateTaskDTO) {
-        TaskModel task = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with id : "+id));
+        Task task = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with id : "+id));
 
         if(updateTaskDTO.getName() == null || updateTaskDTO.getName().isEmpty()){
             throw new TaskInvalidCredentialException("Task name cannot be empty");
@@ -146,7 +146,7 @@ public class TaskService implements ITaskService{
         task.setOwner(updateTaskDTO.getOwner());
 
         // Save the updated task
-        TaskModel updatedTask = taskRepository.save(task);
+        Task updatedTask = taskRepository.save(task);
 
         // Map to response DTO
         TaskResponseDTO response = new TaskResponseDTO();
@@ -172,14 +172,14 @@ public class TaskService implements ITaskService{
 
     @Override
     public String deleteTask(String id) {
-        TaskModel deletedTask = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with id :"+id));
+        Task deletedTask = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with id :"+id));
         taskRepository.delete(deletedTask);
         return "task with id "+id+" deleted successfully";
     }
 
     @Override
     public List<TaskExecutionDTO> getTaskExecution(String id) {
-        TaskModel task = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with the id : " + id));
+        Task task = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with the id : " + id));
 
         if(task.getTaskExecutions() == null || task.getTaskExecutions().isEmpty()){
             return new ArrayList<>();
