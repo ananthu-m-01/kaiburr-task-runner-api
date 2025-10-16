@@ -13,5 +13,4 @@ public class KaiburrTaskRunnerApiApplication {
 
 		SpringApplication.run(KaiburrTaskRunnerApiApplication.class, args);
 	}
-
 }

@@ -1,5 +1,8 @@
 package com.ananthu.kaiburr_task_runner_api.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +14,16 @@ import java.time.Instant;
 @NoArgsConstructor
 public class TaskExecution {
 
+    @NotNull(message = "start time cannot be null")
+    @PastOrPresent(message = "start time must be in the past or present")
     private Instant startTime;
-    private Instant endTime;
-    private String output;
-    private TaskStatus status;
 
+    @PastOrPresent(message = "end time must be in the past or present")
+    private Instant endTime;
+
+    @NotBlank(message = "output cannot be blank")
+    private String output;
+
+    @NotNull(message = "status cannot be null")
+    private TaskStatus status;
 }

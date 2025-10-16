@@ -5,6 +5,7 @@ import com.ananthu.kaiburr_task_runner_api.dto.task.TaskResponseDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task.UpdateTaskDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task_execution.TaskExecutionDTO;
 import com.ananthu.kaiburr_task_runner_api.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> createTask(@RequestBody CreateTaskDTO createTaskDTO){
+    public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody CreateTaskDTO createTaskDTO){
         TaskResponseDTO taskResponseDTO = taskService.createTask(createTaskDTO);
         return ResponseEntity.status(201).body(taskResponseDTO);
     }
@@ -43,7 +44,7 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{id}/run")
+    @PutMapping("/{id}/run")
     public ResponseEntity<TaskExecutionDTO> runTask(@PathVariable String id){
         TaskExecutionDTO execution = taskService.runTask(id);
         if(execution == null){
@@ -54,7 +55,7 @@ public class TaskController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable String id, @RequestBody UpdateTaskDTO updateTaskDTO){
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable String id,@Valid @RequestBody UpdateTaskDTO updateTaskDTO){
             TaskResponseDTO updated = taskService.updateTask(id,updateTaskDTO);
             if(updated == null){
                 return ResponseEntity.notFound().build();
@@ -84,7 +85,6 @@ public class TaskController {
 
     @GetMapping("/name/{name}")
     public ResponseEntity<List<TaskResponseDTO>> getAllTasksByName(@PathVariable String name){
-        System.out.println("called");
         List<TaskResponseDTO> response = taskService.getTaskByName(name);
         return ResponseEntity.ok(response);
     }

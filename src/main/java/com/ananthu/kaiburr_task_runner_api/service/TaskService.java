@@ -5,7 +5,6 @@ import com.ananthu.kaiburr_task_runner_api.dto.task.TaskResponseDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task.UpdateTaskDTO;
 import com.ananthu.kaiburr_task_runner_api.dto.task_execution.TaskExecutionDTO;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.InvalidCommandException;
-import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskInvalidCredentialException;
 import com.ananthu.kaiburr_task_runner_api.exceptions.task.TaskNotFoundException;
 import com.ananthu.kaiburr_task_runner_api.model.Task;
 import com.ananthu.kaiburr_task_runner_api.model.TaskExecution;
@@ -31,15 +30,6 @@ public class TaskService implements ITaskService{
 
     @Override
     public TaskResponseDTO createTask(CreateTaskDTO createTaskDTO) {
-        if(createTaskDTO.getName() == null || createTaskDTO.getName().isEmpty()){
-            throw new TaskInvalidCredentialException("Task name cannot be empty");
-        }
-        if(createTaskDTO.getOwner() == null || createTaskDTO.getOwner().isEmpty()){
-            throw new TaskInvalidCredentialException("Task owner name cannot be empty");
-        }
-        if(createTaskDTO.getCommand() == null || createTaskDTO.getCommand().isEmpty()){
-            throw new TaskInvalidCredentialException("Task command cannot be empty");
-        }
         if (!Validation.isCommandSafe(createTaskDTO.getCommand())) {
             throw new InvalidCommandException("Unsafe or potentially malicious command detected!");
         }
@@ -130,7 +120,7 @@ public class TaskService implements ITaskService{
 
         // Validate the command before execution
         if (!Validation.isCommandSafe(task.getCommand())) {
-            throw new TaskInvalidCredentialException("Command is unsafe or not allowed: " + task.getCommand());
+            throw new InvalidCommandException("Command is unsafe or not allowed: " + task.getCommand());
         }
 
         Instant start = Instant.now();
@@ -175,16 +165,6 @@ public class TaskService implements ITaskService{
     @Override
     public TaskResponseDTO updateTask(String id, UpdateTaskDTO updateTaskDTO) {
         Task task = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("task not found with id : "+id));
-
-        if(updateTaskDTO.getName() == null || updateTaskDTO.getName().isEmpty()){
-            throw new TaskInvalidCredentialException("Task name cannot be empty");
-        }
-        if(updateTaskDTO.getOwner() == null || updateTaskDTO.getOwner().isEmpty()){
-            throw new TaskInvalidCredentialException("Task owner name cannot be empty");
-        }
-        if(updateTaskDTO.getCommand() == null || updateTaskDTO.getCommand().isEmpty()){
-            throw new TaskInvalidCredentialException("Task command cannot be empty");
-        }
 
         if (!Validation.isCommandSafe(updateTaskDTO.getCommand())) {
             throw new InvalidCommandException("Unsafe or potentially malicious command detected!");
