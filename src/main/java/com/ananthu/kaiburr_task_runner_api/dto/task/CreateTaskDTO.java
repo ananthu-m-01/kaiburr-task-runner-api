@@ -1,15 +1,16 @@
 package com.ananthu.kaiburr_task_runner_api.dto.task;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CreateTaskDTO {
 
     @NotBlank(message = "task name cannot be empty")
