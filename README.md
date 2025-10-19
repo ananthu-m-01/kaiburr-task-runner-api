@@ -366,6 +366,8 @@ The project uses a global exception handler to manage and standardize API error 
 
 ## Screenshots
 
+### Project setup - Intellij idea community edition
+![Project setup](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/create-task.png?raw=true)
 ### 1. Create a Task
 ![Create Task Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/create-task.png?raw=true)
 
