@@ -364,23 +364,30 @@ The project uses a global exception handler to manage and standardize API error 
 > - `message`: Detailed error message
 > - (For validation errors) Field-specific error messages
 
-### Screenshots
+## Screenshots
 
-1. Create a Task (POST)
+### 1. Create a Task
+![Create Task Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/create-task.png?raw=true)
 
-2. Get all tasks (GET)
+### 2. Get All Tasks
+![Get All Tasks Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/get-all-tasks.png?raw=true)
 
-3. Get task by ID (GET)
+### 3. Get Task by ID
+![Get Task by ID Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/get-task.png?raw=true)
 
-4. Get task by Name (GET)
+### 4. Update a Task
+![Update Task Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/update.png?raw=true)
 
-5. Update a task (PUT)
+### 5. Execute a Task Command
+![Run Task Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/run-task.png?raw=true)
 
-6. Execute a task command (PUT)
+### 6. Delete a Task
+![Delete Task Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/delete-task.png?raw=true)
 
-7. Delete a task (DELETE)
+### 7. Validation Error
+![Validation Error Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/validation-error.png?raw=true)
 
-8. Validation error
+
   
 ### Front End
 
