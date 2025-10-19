@@ -400,7 +400,7 @@ The front-end for this project can be found at:
 **Email:** [ananthu.m.utr@gmail.com](mailto:ananthu.m.utr@gmail.com)  
 **GitHub:** [https://github.com/ananthu-m-01](https://github.com/ananthu-m-01)
 
-> No code is copied from external sources. AI tools were used only for guidance; I fully understands and implements the functionality.
+> No code is copied from external sources. AI tools were used only for guidance; I fully understand and implements the functionality.
 
 ### License
 
