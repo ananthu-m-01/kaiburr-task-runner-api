@@ -366,8 +366,15 @@ The project uses a global exception handler to manage and standardize API error 
 
 ## Screenshots
 
-### Project setup - Intellij idea community edition
-![Project setup](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/create-task.png?raw=true)
+### Project Setup – IntelliJ IDEA Community Edition
+
+The frontend application was developed using **IntelliJ IDEA Community Edition**, which provides robust TypeScript and React support with integrated terminal and version control.
+
+You can download IntelliJ IDEA Community Edition here:  
+🔗 [https://www.jetbrains.com/idea/download/](https://www.jetbrains.com/idea/download/)
+
+![Project setup](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/project-setup.png?raw=true)
+
 ### 1. Create a Task
 ![Create Task Screenshot](https://github.com/ananthu-m-01/kaiburr-task-runner-api/blob/main/screenshots/create-task.png?raw=true)
 
