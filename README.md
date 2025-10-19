@@ -368,7 +368,7 @@ The project uses a global exception handler to manage and standardize API error 
 
 ### Project Setup – IntelliJ IDEA Community Edition
 
-The frontend application was developed using **IntelliJ IDEA Community Edition**, which provides robust TypeScript and React support with integrated terminal and version control.
+The backend application was developed using **IntelliJ IDEA Community Edition**
 
 You can download IntelliJ IDEA Community Edition here:  
 🔗 [https://www.jetbrains.com/idea/download/](https://www.jetbrains.com/idea/download/)
