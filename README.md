@@ -381,8 +381,7 @@ The project uses a global exception handler to manage and standardize API error 
 7. Delete a task (DELETE)
 
 8. Validation error
-   ![Alt Text](C:\Users\anant\Pictures\Screenshots/Screenshot 2025-10-19 183041.png)
-
+  
 ### Front End
 
 The front-end for this project can be found at:  
