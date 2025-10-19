@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class TaskService implements ITaskService{
@@ -113,27 +114,64 @@ public class TaskService implements ITaskService{
         }
 
         Instant start = Instant.now();
-        String[] parts = task.getCommand().split("\\s+");
         StringBuilder output = new StringBuilder();
         TaskStatus status = TaskStatus.RUNNING;
 
-        try {
-            ProcessBuilder pb = new ProcessBuilder(parts);
-            Process process = pb.start();
+        Process process = null;
+        String os = System.getProperty("os.name").toLowerCase();
+        String command = task.getCommand();
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
+        try {
+            boolean canRun = true;
+            ProcessBuilder pb = null;
+
+            if (os.contains("win")) {
+                // Windows-specific check
+                if (command.equalsIgnoreCase("pwd") || command.equalsIgnoreCase("date") || command.equalsIgnoreCase("time") ) {
+                    canRun = false;
+                } else {
+                    pb = new ProcessBuilder("cmd.exe", "/c", command);
+                }
+            } else {
+                // Linux/Mac-specific check
+                // You can extend this list for unsupported commands
+                if (command.equalsIgnoreCase("cls") || command.equalsIgnoreCase("dir")) {
+                    canRun = false;
+                } else {
+                    pb = new ProcessBuilder("sh", "-c", command);
                 }
             }
 
-            int exitCode = process.waitFor();
-            status = (exitCode == 0) ? TaskStatus.SUCCESS : TaskStatus.FAILED;
+            if (!canRun) {
+                output.append("Command '").append(command).append("' cannot be run on ").append(os);
+                status = TaskStatus.FAILED;
+            } else {
+                // Run the process
+                pb.redirectErrorStream(true);
+                process = pb.start();
+
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        output.append(line).append("\n");
+                    }
+                }
+
+                boolean finished = process.waitFor(10, TimeUnit.SECONDS);
+                if (!finished) {
+                    process.destroyForcibly();
+                    output.append("Error: Process timed out or requires interactive input");
+                    status = TaskStatus.FAILED;
+                } else {
+                    int exitCode = process.exitValue();
+                    status = (exitCode == 0) ? TaskStatus.SUCCESS : TaskStatus.FAILED;
+                }
+            }
 
         } catch (Exception e) {
             output.append("Error: ").append(e.getMessage());
             status = TaskStatus.FAILED;
+            if (process != null) process.destroyForcibly();
         }
 
         Instant end = Instant.now();
@@ -155,6 +193,8 @@ public class TaskService implements ITaskService{
                 .status(execution.getStatus())
                 .build();
     }
+
+
 
 
     @Override
